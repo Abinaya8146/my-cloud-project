@@ -1,0 +1,25 @@
+{
+  "name": "cloud-node-app",
+  "version": "1.0.0",
+  "description": "Node.js app for Jenkins CI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
