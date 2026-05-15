@@ -1,0 +1,43 @@
+name: CI/CD Pipeline – Build & Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code from GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3. Install dependencies & test
+      - name: Install dependencies
+        run: |
+          cd nodejs-app
+          npm install
+          npm test
+
+      # 4. Deploy to EC2 via SSH
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/my-cloud-project
+            git pull origin main
+            cd nodejs-app
+            npm install
+            pm2 restart cloud-node-app || pm2 start index.js --name cloud-node-app
+            pm2 save
